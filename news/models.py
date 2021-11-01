@@ -29,8 +29,6 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    # NEWS = 'N'
-    # ARTICLE = 'A'
     CHOICE_NEWS_OR_ARTICLE = [(1, 'News'), (2, 'Article')]
     news_or_article = models.IntegerField(choices=CHOICE_NEWS_OR_ARTICLE)
     header = models.CharField(max_length=255)
