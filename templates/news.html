@@ -1,35 +1,27 @@
 {% extends 'flatpages/default.html' %}
 {% load Censor %}
-{% block title %}
-News
-{% endblock title %}
+{% block title %} News {% endblock title %}
 {% block content %}
+<div class="container">
 {% if posts %}
-<table>
-    <tr>
-        <th>Заголовок</th>
-        <th>Дата публикации</th>
-        <th>Текст новости</th>
-<!--        <td>Автор</td>-->
-    </tr>
 {% for post in posts %}
-    <tr>
-        <td>{{ post.header }}</td>
-        <td>{{post.date_time|date:'d M Y ' }} </td>
-        <td>
-            {% if   post.news_or_article == 2 %}
-            {{ post.text|truncatechars:50|censor:"***" }}
+    <div class="list-group" style="@include media-breakpoint-down(md)">
+        <div class=" flex-column align-items-start active">
+            <div class="d-flex w-100 justify-content-between">
+                <h4 class="">{{ post.header }}</h4>
+                <small>{{post.date_time|date:'d M Y ' }}</small>
+            </div>
+        {% if   post.news_or_article == 2 %}
+            <p class="mb-1">{{ post.text|truncatewords:50|censor:"***" }}</p>
         {% else %}
-            {{ post.text|censor:"***" }}
+            <p class="mb-1">{{ post.text|censor:"***" }}</p>
         {% endif %}
-        </td>
-<!--        <td>{{ post.author.user }}</td>-->
-    </tr>
+            <small>{{ post.author.user }}</small>
+        </div>
+    </div>
 {% endfor %}
-    </table>
-
 {% else %}
-<p>Новостей нет!</p>
+    <p>Новостей нет!</p>
 {% endif %}
-
+    </div>
 {% endblock content %}

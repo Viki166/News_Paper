@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Модель содержит основные поля и поведение данных. Одна модель представляет одну таблицу в БД
 
+# Класс модели может содержать разные аргументы
 class Author(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # поля модели, указываются как атрибут класса и каждый атрибут соответствует полю таблицы в БД
+    user = models.OneToOneField(User, on_delete=models.CASCADE) # содержит аргументы полей модели
     rating = models.IntegerField(default=0)
 
     def update_rating(self):
@@ -22,34 +25,42 @@ class Author(models.Model):
         self.rating = sum_rating_of_article + sum_rating_of_news + sum_rating_comment
         self.save()
         return self.rating
+    # методы модели работают с конкретной записью в таблице
+
+    def __str__(self):
+        return f'{self.user}'
 
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=255)
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Post(models.Model):
-    # NEWS = 'N'
-    # ARTICLE = 'A'
     CHOICE_NEWS_OR_ARTICLE = [(1, 'News'), (2, 'Article')]
-    news_or_article = models.IntegerField(choices=CHOICE_NEWS_OR_ARTICLE)
-    header = models.CharField(max_length=255)
+    news_or_article = models.IntegerField(choices=CHOICE_NEWS_OR_ARTICLE) # choises- список или кортеж,первым хранит значение, хранимое в БД, второй отображается виджетом формы
+    header = models.CharField(max_length=255) # Первичный ключ доступен только для чтения
     text = models.TextField()
     date_time = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default=0)
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
     categories = models.ManyToManyField('Category', through='PostCategory')
 
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
+
+    def preview(self):
+        return self.text[:124] + "..."
+
     def like(self):
         self.rating += 1
-        self.save()
+        self.save() # Родительский метод, вызывается для корректного сохранения объекта в БД
 
     def dislike(self):
         self.rating -= 1
         self.save()
-
-    def preview(self):
-        return self.text[:124] + "..."
 
 
 class PostCategory(models.Model):
@@ -71,3 +82,4 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+

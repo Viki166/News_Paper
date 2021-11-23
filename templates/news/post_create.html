@@ -1,0 +1,24 @@
+{% extends 'flatpages/default.html' %}
+{% load Censor %}
+<!-- Название у нас будет news -->
+{% block title %}
+News
+{% endblock title %}
+{% block content %}
+
+<form method="POST">
+{% csrf_token %}
+{% for i in  form  %}
+    {% if  i  == form.author %}
+    <div class="py-1">Автор: {{ i }}</div>
+    {% elif i == form.news_or_article %}
+        <div class="py-1">Статья или новость: {{ i }}</div>
+    {% elif i == form.text %}
+        <div class="py-1">Текст: {{ i }}</div>
+    {% elif i == form.categories %}
+        <div class="py-1">Категория: {{ i }}</div>
+    {% endif %}
+{% endfor %}
+<button class="btn btn-outline-dark">Добавить</button>
+</form>
+{% endblock content %}

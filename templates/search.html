@@ -1,0 +1,40 @@
+{% extends 'flatpages/default.html' %}
+{% load Censor %}
+{% load static %}
+{% block title %}
+News
+{% endblock title %}
+{% block content %}
+<div class="container">
+<form method="GET">
+    {{ filter.form }}
+    <button class="btn btn-outline-dark">Найти</button>
+</form>
+{% if posts %}
+{% for post in filter.qs %}
+    <div class="list-group p-2">
+            <div class="flex-column align-items-start active">
+                <div class="d-flex w-100 justify-content-between">
+                    <h4 class="">{{ post.header }}</h4>
+                    <small>{{post.date_time|date:'d M Y ' }}</small>
+                </div>
+{% if   post.news_or_article == 2 %}
+    <p class="mb-1">{{ post.text|truncatewords:50|censor:"***" }}</p>
+{% else %}
+    <p class="mb-1">{{ post.text|censor:"***" }}</p>
+{% endif %}
+    <small>{{ post.author.user }}</small>
+        <div class="p-1" style="text-align:center">
+            <a style="color:#16181b" href="{% url 'post_detail' post.id %}">Подробнее</a>
+            <a style="color:#16181b" href="{% url 'post_update' post.id %}">Редактировать</a>
+            <a style="color:#16181b" href="{% url 'post_delete' post.id %}">Удалить </a>
+        </div>
+            </div>
+    </div>
+{% endfor %}
+</table>
+{% else %}
+    <p>Новостей нет!</p>
+{% endif %}
+</div>
+{% endblock content %}
