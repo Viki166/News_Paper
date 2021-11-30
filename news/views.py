@@ -1,26 +1,30 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views import View
-from django.shortcuts import render
-from .models import Author, Post, Category, Comment
+from .models import Author, Post, Category
 from .filters import PostFilter
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
+# Class-based views — представления, организованные в виде классов.
+# Generic class-based views — часто используемые представления, которые Django предлагает в виде решения «из коробки». Они реализуют в первую очередь функционал CRUD (Create Read Update Delete).
+
+
+# Список всех новостей
 class Postlist(ListView):
     model = Post
     template_name = 'news.html'
     context_object_name = 'posts'
     paginate_by = 3
     queryset = Post.objects.order_by('-id')
-# Manager(object)- самый важный атрибут модели. Это интерфейс, через который django выполняет запросы к БД и получает объекты
+
+# Подробное представление новости
+# class PostDetail(DetailView):
+#     model = Post
+#     template_name = 'post.html'
+#     context_object_name = 'post'
 
 
-class PostDetail(DetailView):
-    model = Post
-    template_name = 'post.html'
-    context_object_name = 'post'
-
-
+# Сортировка новостей по дате и имени автора
 class SearchList(ListView):
     model = Post
     template_name = 'search.html'
@@ -30,39 +34,50 @@ class SearchList(ListView):
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs) # Родительский метод, вызывается для корректного сохранения объекта в БД
+        context = super().get_context_data(**kwargs)
         context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())
         context['categories'] = Category.objects.all()
         context['form'] = PostForm()
         return context
 
-    def post(self, request, *args, **kwargs):# дополнительные аргументы для методов
+    def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
         return super().get(request, *args, **kwargs)
 
 
+# Дженерик для получения детальной новости
 class PostDetailView(DetailView):
     template_name = 'news/post_detail.html'
     queryset = Post.objects.all()
 
 
-class PostCreateView(CreateView):
+# Дженерик для создания новости
+class PostCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'news/post_create.html'
     form_class = PostForm
+    permission_required = 'news.add_author'
 
 
-class PostUpdateView(UpdateView):
+# Дженерик для редактирования новости
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'news/post_create.html'
     form_class = PostForm
+    permission_required = 'news.change_author'
 
-    def get_object(self,**kwargs):
+    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
+    def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
 
-class PostDeleteView(DeleteView):
+# Дженерик для удаления новости
+class PostDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'news/post_delete.html'
     queryset = Post.objects.all()
     success_url = '/news/search/'
+    permission_required = 'news.delete_author'
+
+
+

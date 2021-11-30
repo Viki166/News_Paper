@@ -26,15 +26,17 @@ News
     <small>{{ post.author.user }}</small>
         <div class="p-1" style="text-align:center">
             <a style="color:#16181b" href="{% url 'post_detail' post.id %}">Подробнее</a>
-            <a style="color:#16181b" href="{% url 'post_update' post.id %}">Редактировать</a>
-            <a style="color:#16181b" href="{% url 'post_delete' post.id %}">Удалить </a>
+                    <a style="color:#16181b" href="{% url 'post_update' post.id %}">Редактировать</a>
+                    <a style="color:#16181b" href="{% url 'post_delete' post.id %}">Удалить </a>
         </div>
+
             </div>
     </div>
 {% endfor %}
-</table>
 {% else %}
     <p>Новостей нет!</p>
 {% endif %}
+    <button class="btn btn-outline-secondary"><a  href="search/add" style="color:#16181b">Создать новость</a></button>
 </div>
+
 {% endblock content %}
