@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
 {% load static %}
+{% load auth_extras %}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
@@ -19,12 +20,23 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="--bs-bg-opacity: 0.15;">
             <div class="container px-lg-5">
-                <a class="navbar-brand" href="/news">News</a>
+                <a class="navbar-brand" href="/news">Новости</a>
+                {% if request.user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{% url 'user_logout' %}">Выход</a>
+                {% else %}
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Регистрация</a>
+                    <a class="nav-item nav-link" href="{% url 'user_login' %}">Войти</a>
+                {% endif %}
+                {% if not request.user|has_group:'authors' %}
+                    <button class="btn btn-outline-light" > <a  href="upgrade/"> Стать автором!</a> </button>
+                {% else %}
+                    <button class="btn btn-outline-light" style="display:none"> <a  href="upgrade/"> Стать автором!</a> </button>
+                {% endif %}
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="/news">News</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/news/search">News search</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/news">Новости</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/news/search">Найти новость</a></li>
                     </ul>
                 </div>
             </div>

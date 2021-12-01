@@ -9,4 +9,8 @@ urlpatterns = [
     path('add/', PostCreateView.as_view(), name='post_create'), # Создание новости
     path('<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'), # Удаление новости
     path('<int:pk>/edit/', PostUpdateView.as_view(), name='post_update'), # Редактирование новости
+    path('register/', register, name='register'),
+    path('login/', user_login, name='user_login'),
+    path('logout/', user_logout, name='user_logout'),
+    path('upgrade/', upgrade_me, name='upgrade'),
 ]

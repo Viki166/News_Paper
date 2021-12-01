@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9=hkk#psryoxac+ajlwko3f85mqc@367@rjkh4r$^0#u9ml7u_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'news',
     'static',
-    'sign',
-    'protect',
     'django_filters',
     'allauth',
     'allauth.account',
@@ -74,7 +72,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -135,13 +132,12 @@ STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
+ACCOUNT_FORMS = {'register': 'news.forms.CommonSignupForm'}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [BASE_DIR /'static']
-###LOGIN_URL = '/sign/login/'
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/news/search/'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
