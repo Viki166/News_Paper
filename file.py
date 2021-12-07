@@ -72,3 +72,5 @@ best_post.preview()
 # best_post_comments[1].rating
 # best_post_comments[1].text
 best_post_comments = Comment.objects.filter(post=best_post).values('date_time', 'user', 'rating', 'text')
+
+

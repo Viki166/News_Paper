@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.shortcuts import render
 # Модель содержит основные поля и поведение данных. Одна модель представляет одну таблицу в БД
+
 
 # Класс модели может содержать разные аргументы
 class Author(models.Model):
@@ -33,6 +34,8 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=255)
+    subscribers = models.ManyToManyField(User, blank=True, related_name='subscribers')
+
 
     def __str__(self):
         return f'{self.name}'
@@ -82,4 +85,8 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+
+
+
 

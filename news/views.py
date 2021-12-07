@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category
+from .models import *
 from .filters import PostFilter
 from .forms import PostForm, UserLoginForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -7,6 +7,10 @@ from django.contrib.auth import login, logout
 from django.shortcuts import redirect, render
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from django.views import View
+
+
 # Class-based views — представления, организованные в виде классов.
 # Generic class-based views — часто используемые представления, которые Django предлагает в виде решения «из коробки». Они реализуют в первую очередь функционал CRUD (Create Read Update Delete).
 
@@ -79,7 +83,7 @@ class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 class PostDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'news/post_delete.html'
     queryset = Post.objects.all()
-    success_url = '/news/search/'
+    success_url = '/news/search'
     permission_required = 'news.delete_author'
 
 
@@ -127,4 +131,19 @@ def user_logout(request):
     return redirect('/news')
 
 
+# Кнопка подписки на категорию
+class Subscribe(UpdateView):
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        category = get_object_or_404(Category, id=request.POST.get('category_id'))
+        category.subscribers.add(user)
+        return redirect('/news/search')
 
+
+# Кнопка отписки от категории
+class UnSubscribe(UpdateView):
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        category = get_object_or_404(Category, id=request.POST.get('category_id'))
+        category.subscribers.remove(user)
+        return redirect('/news/search')

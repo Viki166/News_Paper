@@ -13,6 +13,24 @@ Post
         </div>
     <p class="mb-1">{{ post.text|censor:"***" }}</p>
     <small>{{ post.author.user }}</small>
+    <div style="text-align: right;">
+        {% for category in post.categories.all %}
+            <p>Категория: {{ category }}</p>
+         {% if user.is_authenticated %}
+        <div class="btn-group" role="group" aria-label="Basic example">
+        <form action="{% url 'subscribe' category.id %}" method="POST">
+            {% csrf_token %}
+                <button type="submit" name="category_id" class="btn btn-info" value="{{ category.id }}" style="font-size:10px;padding:7px 3px;margin-right: 5px">Подписаться</button>
+        </form>
+        <form action="{% url 'unsubscribe' category.id %}" method="POST">
+            {% csrf_token %}
+                <button type="submit" name="category_id" class="btn btn-info" value="{{ category.id }}" style="font-size:10px;padding:7px 3px">Отписаться</button>
+        </form>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
 
     </div>
      <a style="color:#16181b; text-align: center" href="/news/search">Вернуться</a>

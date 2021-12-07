@@ -13,6 +13,8 @@ News
     <div class="py-1">Автор: {{ i }}</div>
     {% elif i == form.news_or_article %}
         <div class="py-1">Статья или новость: {{ i }}</div>
+    {% elif i == form.header %}
+        <div class="py-1">Заголовок новости: {{ i }}</div>
     {% elif i == form.text %}
         <div class="py-1">Текст: {{ i }}</div>
     {% elif i == form.categories %}

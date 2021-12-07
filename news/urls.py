@@ -13,4 +13,6 @@ urlpatterns = [
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('upgrade/', upgrade_me, name='upgrade'),
+    path('subscribe/<int:pk>', Subscribe.as_view(), name='subscribe'),
+    path('unsubscribe/<int:pk>', UnSubscribe.as_view(), name='unsubscribe'),
 ]
